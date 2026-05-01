@@ -122,11 +122,17 @@ html, body {
 
 .garden-map-wrapper {
   position: relative;
-  /* Scale to fit full image on screen without scrolling.
-     Image is 1204×1306 px → width/height = 0.9217.
-     On mobile: 100vw. On desktop: constrained to viewport height. */
   width: min(100vw, calc((100vh - var(--header-height)) * 0.9217));
   flex-shrink: 0;
+  overflow: hidden;
+  touch-action: none;
+}
+
+#garden-map-inner {
+  position: relative;
+  width: 100%;
+  transform-origin: 0 0;
+  will-change: transform;
 }
 
 .garden-image {

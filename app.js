@@ -559,9 +559,90 @@ function showToast(msg) {
   }, 2500);
 }
 
+// ── MAP ZOOM / PAN ────────────────────────────────────────────────────────────
+
+function initMapZoom() {
+  const wrapper = document.getElementById('garden-map');
+  const inner   = document.getElementById('garden-map-inner');
+
+  let scale = 1, tx = 0, ty = 0;
+  let startScale, startTx, startTy, startMid, startDist;
+  let isDragging = false, dragDidHappen = false;
+
+  function clamp(v, lo, hi) { return Math.max(lo, Math.min(hi, v)); }
+
+  function applyTransform() {
+    const ww = wrapper.offsetWidth,  wh = wrapper.offsetHeight;
+    const iw = inner.offsetWidth,    ih = inner.offsetHeight;
+    tx = clamp(tx, ww - iw * scale, 0);
+    ty = clamp(ty, wh - ih * scale, 0);
+    inner.style.transform = `translate(${tx}px,${ty}px) scale(${scale})`;
+  }
+
+  function touchDist(a, b) {
+    const dx = a.clientX - b.clientX, dy = a.clientY - b.clientY;
+    return Math.sqrt(dx * dx + dy * dy);
+  }
+  function touchMid(a, b) {
+    return { x: (a.clientX + b.clientX) / 2, y: (a.clientY + b.clientY) / 2 };
+  }
+
+  wrapper.addEventListener('touchstart', e => {
+    startScale = scale; startTx = tx; startTy = ty;
+    isDragging = false; dragDidHappen = false;
+    if (e.touches.length === 2) {
+      startMid  = touchMid(e.touches[0], e.touches[1]);
+      startDist = touchDist(e.touches[0], e.touches[1]);
+    } else {
+      startMid = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+    }
+  }, { passive: true });
+
+  wrapper.addEventListener('touchmove', e => {
+    if (e.touches.length === 2) {
+      e.preventDefault();
+      isDragging = true; dragDidHappen = true;
+      const newDist = touchDist(e.touches[0], e.touches[1]);
+      const newMid  = touchMid(e.touches[0], e.touches[1]);
+      const newScale = clamp(startScale * (newDist / startDist), 1, 5);
+      const ratio = newScale / startScale;
+      const rect = wrapper.getBoundingClientRect();
+      const px = startMid.x - rect.left, py = startMid.y - rect.top;
+      tx = px - ratio * (px - startTx) + (newMid.x - startMid.x);
+      ty = py - ratio * (py - startTy) + (newMid.y - startMid.y);
+      scale = newScale;
+      applyTransform();
+    } else if (e.touches.length === 1) {
+      const dx = e.touches[0].clientX - startMid.x;
+      const dy = e.touches[0].clientY - startMid.y;
+      if (!isDragging && dx * dx + dy * dy < 36) return; // 6px threshold
+      e.preventDefault();
+      isDragging = true; dragDidHappen = true;
+      tx = startTx + dx; ty = startTy + dy;
+      applyTransform();
+    }
+  }, { passive: false });
+
+  wrapper.addEventListener('touchend', e => {
+    if (e.touches.length === 1) {
+      // Lifted one finger mid-pinch — restart pan from current position
+      startScale = scale; startTx = tx; startTy = ty;
+      startMid = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+      isDragging = false;
+    }
+  }, { passive: true });
+
+  // Block bed-button clicks that were actually part of a drag
+  wrapper.addEventListener('click', e => {
+    if (dragDidHappen) { e.stopPropagation(); dragDidHappen = false; }
+  }, true);
+}
+
 // ── EVENT LISTENERS ───────────────────────────────────────────────────────────
 
 function setupListeners() {
+  initMapZoom();
+
   // Auth
   document.getElementById('sign-in-btn').addEventListener('click', signInUser);
 
