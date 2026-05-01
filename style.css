@@ -206,6 +206,30 @@ html, body {
   transform: translateY(2px);
 }
 
+/* ── EASTER EGG ───────────────────────────────────────── */
+
+.seating-zone {
+  position: absolute;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.easter-dog {
+  position: absolute;
+  width: 9%;
+  min-width: 34px;
+  pointer-events: none;
+  z-index: 50;
+  transform-origin: 50% 50%;
+  filter: drop-shadow(0 2px 6px rgba(0,0,0,0.5));
+}
+
+.easter-dog svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
 /* kept for compat — unused in new design */
 .bed-plant-chips { display: none; }
 

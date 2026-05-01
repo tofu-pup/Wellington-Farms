@@ -265,6 +265,86 @@ function renderBedOverlays() {
     container.appendChild(el);
     container.appendChild(label);
   });
+
+  // Seating area easter egg tap zone (bottom-left patio)
+  const seatZone = document.createElement('div');
+  seatZone.className = 'seating-zone';
+  seatZone.style.cssText = 'left:4%;top:78%;width:22%;height:20%';
+  seatZone.addEventListener('click', triggerDogEasterEgg);
+  container.appendChild(seatZone);
+}
+
+// ── EASTER EGG ────────────────────────────────────────────────────────────────
+
+const DOG_SVG = `<svg viewBox="0 0 110 60" fill="white" xmlns="http://www.w3.org/2000/svg">
+  <path d="M10 38 C14 27 26 22 44 22 C63 21 77 27 85 36 L83 47 C65 53 27 53 12 46 Z"/>
+  <path d="M81 34 Q86 22 90 15 L85 13 Q81 21 76 33 Z"/>
+  <ellipse cx="90" cy="13" rx="11" ry="7" transform="rotate(-12 90 13)"/>
+  <path d="M97 10 Q106 8 108 14 Q107 20 98 18 Z"/>
+  <ellipse cx="108" cy="13" rx="2" ry="1.5" fill="#999"/>
+  <circle cx="92" cy="11" r="1.5" fill="#555"/>
+  <path d="M86 8 C82 3 75 4 73 8 C77 12 83 11 86 8 Z"/>
+  <line x1="68" y1="48" x2="63" y2="59" stroke="white" stroke-width="4.5" stroke-linecap="round"/>
+  <line x1="79" y1="47" x2="83" y2="59" stroke="white" stroke-width="4.5" stroke-linecap="round"/>
+  <line x1="22" y1="48" x2="18" y2="59" stroke="white" stroke-width="4.5" stroke-linecap="round"/>
+  <line x1="35" y1="47" x2="39" y2="59" stroke="white" stroke-width="4.5" stroke-linecap="round"/>
+  <path d="M11 42 C6 47 4 52 4 57" stroke="white" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+</svg>`;
+
+function triggerDogEasterEgg() {
+  const inner = document.getElementById('garden-map-inner');
+  if (document.getElementById('easter-dog')) return;
+
+  const dog = document.createElement('div');
+  dog.id = 'easter-dog';
+  dog.className = 'easter-dog';
+  dog.innerHTML = DOG_SVG;
+  inner.appendChild(dog);
+
+  // Waypoints: [time_ms, x%, y%, facing (1=right  -1=left)]
+  // Path runs through the row 2-3 alley (~y=38%) between the raised beds
+  const path = [
+    [0,    -10, 38,  1],   // off-screen left
+    [600,    5, 38,  1],   // just entered
+    [2700,  37, 38,  1],   // reached col 1-2 gap — slow trot
+    [3200,  35, 38, -1],   // turned to sniff something
+    [3800,  35, 38, -1],   // sniffing
+    [4200,  37, 38,  1],   // head up, turned back right
+    [4600,  37, 38,  1],   // brief freeze before bolting
+    [6800, 115, 38,  1],   // BOLT off screen right
+    [7000, 115, 38,  1],
+  ];
+
+  const startTime = performance.now();
+  function lerp(a, b, t) { return a + (b - a) * t; }
+  function easeInOut(t) { return t < 0.5 ? 2*t*t : 1 - Math.pow(-2*t+2, 2)/2; }
+
+  function tick(now) {
+    const elapsed = now - startTime;
+    if (elapsed >= 7000) { dog.remove(); return; }
+
+    let i = 0;
+    while (i < path.length - 2 && elapsed >= path[i + 1][0]) i++;
+    const [ta, xa, ya, fa] = path[i];
+    const [tb, xb, yb, fb] = path[i + 1];
+    const segT = tb > ta ? Math.min(1, (elapsed - ta) / (tb - ta)) : 1;
+    const t    = easeInOut(segT);
+
+    const x      = lerp(xa, xb, t);
+    const y      = lerp(ya, yb, t);
+    const facing = segT < 0.5 ? fa : fb;
+
+    const bolting = elapsed > 4600;
+    const bob = Math.sin(elapsed / (bolting ? 85 : 190) * Math.PI) * (bolting ? 3 : 1.2);
+
+    dog.style.left      = x + '%';
+    dog.style.top       = y + '%';
+    dog.style.transform = `scaleX(${facing}) translateY(${bob}px)`;
+
+    requestAnimationFrame(tick);
+  }
+
+  requestAnimationFrame(tick);
 }
 
 function updateBedOverlay(bedId) {
