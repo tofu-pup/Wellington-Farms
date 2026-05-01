@@ -101,13 +101,13 @@ const BEDS = [
   { id: 'bed-7',  name: 'District 7',  left: 23.3, top: 43.8, w: 11.7, h: 8.1 },
   { id: 'bed-8',  name: 'District 8',  left: 40.8, top: 44.0, w: 12.5, h: 7.8 },
   { id: 'bed-9',  name: 'District 9',  left: 58.5, top: 43.7, w: 12.3, h: 7.9 },
-  // Row 4 — D10+D11 measured; D12 extrapolated from col-3 drift (+0.5/row, top from col avg)
+  // Row 4 — all measured
   { id: 'bed-10', name: 'District 10', left: 22.1, top: 57.4, w: 12.6, h: 8.7 },
   { id: 'bed-11', name: 'District 11', left: 40.3, top: 57.6, w: 12.6, h: 8.5 },
-  { id: 'bed-12', name: 'District 12', left: 59.0, top: 57.7, w: 12.9, h: 8.4 },
-  // Row 5 — D14 measured; D13 extrapolated from col-1 drift (-1.3/row)
-  { id: 'bed-13', name: 'District 13', left: 20.8, top: 72.5, w: 13.0, h: 8.5 },
-  { id: 'bed-14', name: 'District 14', left: 40.1, top: 72.5, w: 12.8, h: 8.4 },
+  { id: 'bed-12', name: 'District 12', left: 58.6, top: 57.8, w: 12.9, h: 8.2 },
+  // Row 5 — all measured
+  { id: 'bed-13', name: 'District 13', left: 21.4, top: 73.1, w: 13.1, h: 7.9 },
+  { id: 'bed-14', name: 'District 14', left: 39.9, top: 72.5, w: 13.0, h: 8.3 },
 ];
 
 // ── APP STATE ─────────────────────────────────────────────────────────────────

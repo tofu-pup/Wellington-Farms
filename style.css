@@ -191,13 +191,13 @@ html, body {
 }
 
 .bed-label {
-  font-size: 8px;
+  font-size: clamp(9px, 2.6vw, 20px);
   font-weight: 700;
-  color: rgba(255,255,255,0.9);
+  color: rgba(255,255,255,0.95);
   text-shadow: 0 1px 3px rgba(0,0,0,0.9);
   line-height: 1;
   white-space: nowrap;
-  align-self: flex-end;
+  margin-top: auto;
 }
 
 /* kept for compat — unused in new design */
