@@ -86,22 +86,25 @@ const PLANT_LIBRARY = [
 // tracks the same coordinate space as the rendered (zoomed) image.
 // Fine-tune by opening app in browser and inspecting overlay positions.
 
-// Positions as % of raw image (508×621px). Fine-tune here once visible.
+// Positions as % of image (1204×1306 px).
+// Columns at left: 16.5 / 33.5 / 50.5, each 14.5% wide.
+// 4 full rows of 3 + 1 partial row of 2 (left two columns only).
+// Add ?debug to URL to tap anywhere and see coordinates for fine-tuning.
 const BEDS = [
-  { id: 'bed-1',  name: 'District 1',  left: 8,    top: 20,   w: 22, h: 13.5 },
-  { id: 'bed-2',  name: 'District 2',  left: 33.5, top: 20,   w: 22, h: 13.5 },
-  { id: 'bed-3',  name: 'District 3',  left: 59,   top: 20,   w: 22, h: 13.5 },
-  { id: 'bed-4',  name: 'District 4',  left: 8,    top: 35.5, w: 22, h: 13.5 },
-  { id: 'bed-5',  name: 'District 5',  left: 33.5, top: 35.5, w: 22, h: 13.5 },
-  { id: 'bed-6',  name: 'District 6',  left: 59,   top: 35.5, w: 22, h: 13.5 },
-  { id: 'bed-7',  name: 'District 7',  left: 8,    top: 51,   w: 22, h: 13.5 },
-  { id: 'bed-8',  name: 'District 8',  left: 33.5, top: 51,   w: 22, h: 13.5 },
-  { id: 'bed-9',  name: 'District 9',  left: 59,   top: 51,   w: 22, h: 13.5 },
-  { id: 'bed-10', name: 'District 10', left: 8,    top: 66.5, w: 22, h: 13.5 },
-  { id: 'bed-11', name: 'District 11', left: 33.5, top: 66.5, w: 22, h: 13.5 },
-  { id: 'bed-12', name: 'District 12', left: 59,   top: 66.5, w: 22, h: 13.5 },
-  { id: 'bed-13', name: 'District 13', left: 33.5, top: 82,   w: 22, h: 13.5 },
-  { id: 'bed-14', name: 'District 14', left: 59,   top: 82,   w: 22, h: 13.5 },
+  { id: 'bed-1',  name: 'District 1',  left: 16.5, top: 14.5, w: 14.5, h: 8 },
+  { id: 'bed-2',  name: 'District 2',  left: 33.5, top: 14.5, w: 14.5, h: 8 },
+  { id: 'bed-3',  name: 'District 3',  left: 50.5, top: 14.5, w: 14.5, h: 8 },
+  { id: 'bed-4',  name: 'District 4',  left: 16.5, top: 27.2, w: 14.5, h: 8 },
+  { id: 'bed-5',  name: 'District 5',  left: 33.5, top: 27.2, w: 14.5, h: 8 },
+  { id: 'bed-6',  name: 'District 6',  left: 50.5, top: 27.2, w: 14.5, h: 8 },
+  { id: 'bed-7',  name: 'District 7',  left: 16.5, top: 39.9, w: 14.5, h: 8 },
+  { id: 'bed-8',  name: 'District 8',  left: 33.5, top: 39.9, w: 14.5, h: 8 },
+  { id: 'bed-9',  name: 'District 9',  left: 50.5, top: 39.9, w: 14.5, h: 8 },
+  { id: 'bed-10', name: 'District 10', left: 16.5, top: 52.6, w: 14.5, h: 8 },
+  { id: 'bed-11', name: 'District 11', left: 33.5, top: 52.6, w: 14.5, h: 8 },
+  { id: 'bed-12', name: 'District 12', left: 50.5, top: 52.6, w: 14.5, h: 8 },
+  { id: 'bed-13', name: 'District 13', left: 16.5, top: 65.3, w: 14.5, h: 8 },
+  { id: 'bed-14', name: 'District 14', left: 33.5, top: 65.3, w: 14.5, h: 8 },
 ];
 
 // ── APP STATE ─────────────────────────────────────────────────────────────────
@@ -167,13 +170,18 @@ function showApp(user) {
 }
 
 async function signInUser() {
-  const { auth, GoogleAuthProvider, signInWithRedirect } = window._fb;
+  const { auth, GoogleAuthProvider, signInWithPopup, signInWithRedirect } = window._fb;
+  const provider = new GoogleAuthProvider();
   try {
-    const provider = new GoogleAuthProvider();
-    await signInWithRedirect(auth, provider);
-    // Page will redirect to Google and come back — no code runs after this
+    // Popup works on desktop and iOS Safari (user-gesture triggered).
+    // If blocked, fall back to redirect.
+    await signInWithPopup(auth, provider);
   } catch (e) {
-    showToast('Sign-in failed. Please try again.');
+    if (e.code === 'auth/popup-blocked') {
+      await signInWithRedirect(auth, provider);
+    } else if (e.code !== 'auth/popup-closed-by-user') {
+      showToast('Sign-in failed. Please try again.');
+    }
   }
 }
 
@@ -190,6 +198,18 @@ async function signOutUser() {
 function renderBedOverlays() {
   const container = document.getElementById('bed-overlays');
   container.innerHTML = '';
+
+  // Debug mode: tap anywhere on the map to see x%,y% for tuning bed positions.
+  // Enable with ?debug in the URL.
+  if (new URLSearchParams(location.search).has('debug')) {
+    document.getElementById('garden-map').addEventListener('click', e => {
+      const rect = e.currentTarget.getBoundingClientRect();
+      const x = ((e.clientX - rect.left) / rect.width * 100).toFixed(1);
+      const y = ((e.clientY - rect.top) / rect.height * 100).toFixed(1);
+      showToast(`x: ${x}%  y: ${y}%`);
+      console.log(`click → left:${x}%, top:${y}%`);
+    }, { capture: true });
+  }
 
   BEDS.forEach(bed => {
     const el = document.createElement('button');

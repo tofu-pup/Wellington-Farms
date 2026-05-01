@@ -122,10 +122,10 @@ html, body {
 
 .garden-map-wrapper {
   position: relative;
-  /* Scale to fit full portrait image on screen.
-     Image ratio: 508/621 ≈ 0.8183 (width ÷ height).
-     On mobile this equals 100vw; on desktop it equals the viewport height. */
-  width: min(100vw, calc((100vh - var(--header-height)) * 0.8183));
+  /* Scale to fit full image on screen without scrolling.
+     Image is 1204×1306 px → width/height = 0.9217.
+     On mobile: 100vw. On desktop: constrained to viewport height. */
+  width: min(100vw, calc((100vh - var(--header-height)) * 0.9217));
   flex-shrink: 0;
 }
 
