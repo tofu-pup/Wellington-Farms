@@ -178,7 +178,8 @@
   </script>
   <script type="module">
     import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
-    import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged }
+    import { getAuth, GoogleAuthProvider, signInWithRedirect, getRedirectResult,
+             signOut, onAuthStateChanged }
       from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
     import { getFirestore, collection, doc, addDoc, getDocs, deleteDoc,
              query, orderBy, onSnapshot, serverTimestamp }
@@ -190,8 +191,8 @@
     const auth = getAuth(fbApp);
     const db = getFirestore(fbApp);
 
-    window._fb = { auth, db, GoogleAuthProvider, signInWithPopup, signOut,
-      onAuthStateChanged, collection, doc, addDoc, getDocs, deleteDoc,
+    window._fb = { auth, db, GoogleAuthProvider, signInWithRedirect, getRedirectResult,
+      signOut, onAuthStateChanged, collection, doc, addDoc, getDocs, deleteDoc,
       query, orderBy, onSnapshot, serverTimestamp, ALLOWED_EMAILS };
 
     const { initApp } = await import('./app.js');

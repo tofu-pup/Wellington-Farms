@@ -115,7 +115,14 @@ let unsubscribers = [];
 // ── INIT ──────────────────────────────────────────────────────────────────────
 
 export function initApp() {
-  const { auth, onAuthStateChanged } = window._fb;
+  const { auth, onAuthStateChanged, getRedirectResult } = window._fb;
+
+  // Handle redirect result first (fires after Google redirects back)
+  getRedirectResult(auth).then(result => {
+    if (result?.user && !isAllowed(result.user.email)) {
+      signOutUser();
+    }
+  }).catch(() => {});
 
   onAuthStateChanged(auth, (user) => {
     if (user && isAllowed(user.email)) {
@@ -124,7 +131,7 @@ export function initApp() {
     } else {
       currentUser = null;
       showAuth();
-      if (user) signOutUser(); // signed in but not allowed
+      if (user) signOutUser();
     }
   });
 
@@ -159,14 +166,13 @@ function showApp(user) {
 }
 
 async function signInUser() {
-  const { auth, GoogleAuthProvider, signInWithPopup } = window._fb;
+  const { auth, GoogleAuthProvider, signInWithRedirect } = window._fb;
   try {
     const provider = new GoogleAuthProvider();
-    await signInWithPopup(auth, provider);
+    await signInWithRedirect(auth, provider);
+    // Page will redirect to Google and come back — no code runs after this
   } catch (e) {
-    if (e.code !== 'auth/popup-closed-by-user') {
-      showToast('Sign-in failed. Please try again.');
-    }
+    showToast('Sign-in failed. Please try again.');
   }
 }
 
