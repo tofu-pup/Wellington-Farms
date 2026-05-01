@@ -254,11 +254,16 @@ function renderBedOverlays() {
     el.setAttribute('aria-label', bed.name);
     el.style.cssText = `left:${bed.left}%;top:${bed.top}%;width:${bed.w}%;height:${bed.h}%`;
 
-    el.innerHTML = `<div class="bed-icons" id="icons-${bed.id}"></div>
-                    <span class="bed-label">${bed.name}</span>`;
+    el.innerHTML = `<div class="bed-icons" id="icons-${bed.id}"></div>`;
+
+    const label = document.createElement('span');
+    label.className = 'bed-label';
+    label.textContent = bed.name;
+    label.style.cssText = `left:${bed.left}%;top:${bed.top + bed.h}%;width:${bed.w}%`;
 
     el.addEventListener('click', () => openBedSheet(bed.id));
     container.appendChild(el);
+    container.appendChild(label);
   });
 }
 
