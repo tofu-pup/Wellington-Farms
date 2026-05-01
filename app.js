@@ -276,19 +276,36 @@ function renderBedOverlays() {
 
 // ── EASTER EGG ────────────────────────────────────────────────────────────────
 
-const DOG_SVG = `<svg viewBox="0 0 110 60" fill="white" xmlns="http://www.w3.org/2000/svg">
-  <path d="M10 38 C14 27 26 22 44 22 C63 21 77 27 85 36 L83 47 C65 53 27 53 12 46 Z"/>
-  <path d="M81 34 Q86 22 90 15 L85 13 Q81 21 76 33 Z"/>
-  <ellipse cx="90" cy="13" rx="11" ry="7" transform="rotate(-12 90 13)"/>
-  <path d="M97 10 Q106 8 108 14 Q107 20 98 18 Z"/>
-  <ellipse cx="108" cy="13" rx="2" ry="1.5" fill="#999"/>
-  <circle cx="92" cy="11" r="1.5" fill="#555"/>
-  <path d="M86 8 C82 3 75 4 73 8 C77 12 83 11 86 8 Z"/>
-  <line x1="68" y1="48" x2="63" y2="59" stroke="white" stroke-width="4.5" stroke-linecap="round"/>
-  <line x1="79" y1="47" x2="83" y2="59" stroke="white" stroke-width="4.5" stroke-linecap="round"/>
-  <line x1="22" y1="48" x2="18" y2="59" stroke="white" stroke-width="4.5" stroke-linecap="round"/>
-  <line x1="35" y1="47" x2="39" y2="59" stroke="white" stroke-width="4.5" stroke-linecap="round"/>
-  <path d="M11 42 C6 47 4 52 4 57" stroke="white" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+// Proper Italian Greyhound side-view SVG.
+// Layer order: tail → far legs (behind body) → body → brown spot → neck → head → near legs (in front).
+// Legs use CSS classes for diagonal-trot animation; far legs are slightly grey to show depth.
+const DOG_SVG = `<svg viewBox="0 0 190 90" xmlns="http://www.w3.org/2000/svg">
+  <path fill="none" stroke="white" stroke-width="3.5" stroke-linecap="round"
+        d="M 48 37 C 43 46 39 55 37 63"/>
+  <g transform="translate(60,57)"><g class="dog-leg leg-diag-b">
+    <path fill="#ccc" d="M -3 0 C -3.5 8 -3.5 16 -3 22 C -2.5 26 -2 30 -2 32 L 2 32 C 2 30 2.5 26 3 22 C 3.5 16 3.5 8 3 0 Z"/>
+    <ellipse cx="0" cy="33" rx="4" ry="1.6" fill="#ccc"/>
+  </g></g>
+  <g transform="translate(110,57)"><g class="dog-leg leg-diag-b">
+    <path fill="#ccc" d="M -3 0 C -3.5 8 -3.5 16 -3 22 C -2.5 26 -2 30 -2 32 L 2 32 C 2 30 2.5 26 3 22 C 3.5 16 3.5 8 3 0 Z"/>
+    <ellipse cx="0" cy="33" rx="4" ry="1.6" fill="#ccc"/>
+  </g></g>
+  <path fill="white" d="M 120 56 C 118 42 122 28 126 22 C 118 18 108 15 98 15 C 84 15 72 18 62 22 C 54 26 48 32 48 36 C 46 44 48 52 54 58 C 60 64 72 64 78 58 C 84 50 90 42 96 40 C 104 40 114 48 120 56 Z"/>
+  <ellipse cx="83" cy="18" rx="22" ry="7" transform="rotate(-5,83,18)" fill="#7a3a10"/>
+  <path fill="white" d="M 126 22 C 130 16 138 10 146 8 C 150 7 154 8 156 10 C 152 14 146 18 140 22 C 136 24 130 24 126 22 Z"/>
+  <ellipse cx="164" cy="12" rx="14" ry="7" transform="rotate(-8,164,12)" fill="white"/>
+  <path fill="white" d="M 172 10 C 178 8 185 11 186 15 C 186 20 181 21 174 18 Z"/>
+  <ellipse cx="186" cy="15" rx="2.5" ry="1.5" fill="#888"/>
+  <circle cx="167" cy="10" r="1.8" fill="#333"/>
+  <path fill="#ddd" d="M 155 9 C 151 3 144 4 142 8 C 146 12 152 11 155 9 Z"/>
+  <g transform="translate(67,57)"><g class="dog-leg leg-diag-a">
+    <path fill="white" d="M -3 0 C -3.5 8 -3.5 16 -3 22 C -2.5 26 -2 30 -2 32 L 2 32 C 2 30 2.5 26 3 22 C 3.5 16 3.5 8 3 0 Z"/>
+    <ellipse cx="0" cy="33" rx="4" ry="1.6" fill="white"/>
+  </g></g>
+  <g transform="translate(117,57)"><g class="dog-leg leg-diag-a">
+    <path fill="white" d="M -3 0 C -3.5 8 -3.5 16 -3 22 C -2.5 26 -2 30 -2 32 L 2 32 C 2 30 2.5 26 3 22 C 3.5 16 3.5 8 3 0 Z"/>
+    <ellipse cx="0" cy="33" rx="4" ry="1.6" fill="white"/>
+  </g></g>
 </svg>`;
 
 function triggerDogEasterEgg() {
@@ -301,18 +318,15 @@ function triggerDogEasterEgg() {
   dog.innerHTML = DOG_SVG;
   inner.appendChild(dog);
 
-  // Waypoints: [time_ms, x%, y%, facing (1=right  -1=left)]
-  // Path runs through the row 2-3 alley (~y=38%) between the raised beds
+  // Path through the row 2–3 alley (~y=38%). Dog always faces right.
   const path = [
-    [0,    -10, 38,  1],   // off-screen left
-    [600,    5, 38,  1],   // just entered
-    [2700,  37, 38,  1],   // reached col 1-2 gap — slow trot
-    [3200,  35, 38, -1],   // turned to sniff something
-    [3800,  35, 38, -1],   // sniffing
-    [4200,  37, 38,  1],   // head up, turned back right
-    [4600,  37, 38,  1],   // brief freeze before bolting
-    [6800, 115, 38,  1],   // BOLT off screen right
-    [7000, 115, 38,  1],
+    [0,    -10, 38],
+    [700,    5, 38],   // entered
+    [2800,  37, 38],   // reached col 1-2 gap (slow trot)
+    [3700,  37, 38],   // pause / sniff
+    [4500,  37, 38],   // pre-bolt freeze
+    [6800, 115, 38],   // BOLT off screen
+    [7000, 115, 38],
   ];
 
   const startTime = performance.now();
@@ -325,21 +339,21 @@ function triggerDogEasterEgg() {
 
     let i = 0;
     while (i < path.length - 2 && elapsed >= path[i + 1][0]) i++;
-    const [ta, xa, ya, fa] = path[i];
-    const [tb, xb, yb, fb] = path[i + 1];
+    const [ta, xa, ya] = path[i];
+    const [tb, xb, yb] = path[i + 1];
     const segT = tb > ta ? Math.min(1, (elapsed - ta) / (tb - ta)) : 1;
     const t    = easeInOut(segT);
 
-    const x      = lerp(xa, xb, t);
-    const y      = lerp(ya, yb, t);
-    const facing = segT < 0.5 ? fa : fb;
+    const x = lerp(xa, xb, t);
+    const y = lerp(ya, yb, t);
 
-    const bolting = elapsed > 4600;
-    const bob = Math.sin(elapsed / (bolting ? 85 : 190) * Math.PI) * (bolting ? 3 : 1.2);
+    const bolting = elapsed > 4500;
+    if (bolting) dog.classList.add('running');
 
+    const bob = Math.sin(elapsed / (bolting ? 70 : 200) * Math.PI) * (bolting ? 1.5 : 0.8);
     dog.style.left      = x + '%';
     dog.style.top       = y + '%';
-    dog.style.transform = `scaleX(${facing}) translateY(${bob}px)`;
+    dog.style.transform = `translateY(${bob}px)`;
 
     requestAnimationFrame(tick);
   }

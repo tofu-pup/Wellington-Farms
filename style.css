@@ -216,18 +216,39 @@ html, body {
 
 .easter-dog {
   position: absolute;
-  width: 9%;
-  min-width: 34px;
+  width: 11%;
+  min-width: 42px;
   pointer-events: none;
   z-index: 50;
-  transform-origin: 50% 50%;
-  filter: drop-shadow(0 2px 6px rgba(0,0,0,0.5));
+  filter: drop-shadow(0 2px 8px rgba(0,0,0,0.6));
 }
 
 .easter-dog svg {
   display: block;
   width: 100%;
   height: auto;
+  overflow: visible;
+}
+
+/* Legs rotate from their top attachment point */
+.dog-leg {
+  transform-box: fill-box;
+  transform-origin: 50% 0%;
+}
+
+.leg-diag-a { animation: legDiagA 0.52s ease-in-out infinite; }
+.leg-diag-b { animation: legDiagB 0.52s ease-in-out infinite; }
+
+.easter-dog.running .leg-diag-a,
+.easter-dog.running .leg-diag-b { animation-duration: 0.18s; }
+
+@keyframes legDiagA {
+  0%, 100% { transform: rotate(-22deg); }
+  50%       { transform: rotate(22deg);  }
+}
+@keyframes legDiagB {
+  0%, 100% { transform: rotate(22deg);  }
+  50%       { transform: rotate(-22deg); }
 }
 
 /* kept for compat — unused in new design */
