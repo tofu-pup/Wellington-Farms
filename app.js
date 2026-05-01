@@ -199,16 +199,18 @@ function renderBedOverlays() {
   const container = document.getElementById('bed-overlays');
   container.innerHTML = '';
 
-  // Debug mode: tap anywhere on the map to see x%,y% for tuning bed positions.
-  // Enable with ?debug in the URL.
+  // Debug mode (?debug in URL): overlays are hidden and non-interactive so you
+  // can tap the actual bed positions on the image and read back x%,y%.
   if (new URLSearchParams(location.search).has('debug')) {
+    document.getElementById('bed-overlays').style.pointerEvents = 'none';
+    document.getElementById('bed-overlays').style.opacity = '0';
     document.getElementById('garden-map').addEventListener('click', e => {
-      const rect = e.currentTarget.getBoundingClientRect();
+      const rect = e.currentTarget.querySelector('.garden-image').getBoundingClientRect();
       const x = ((e.clientX - rect.left) / rect.width * 100).toFixed(1);
       const y = ((e.clientY - rect.top) / rect.height * 100).toFixed(1);
       showToast(`x: ${x}%  y: ${y}%`);
       console.log(`click → left:${x}%, top:${y}%`);
-    }, { capture: true });
+    });
   }
 
   BEDS.forEach(bed => {
