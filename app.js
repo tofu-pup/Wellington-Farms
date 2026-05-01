@@ -86,21 +86,24 @@ const PLANT_LIBRARY = [
 // tracks the same coordinate space as the rendered (zoomed) image.
 // Fine-tune by opening app in browser and inspecting overlay positions.
 
+// Positions as % of the raw image dimensions (508×621px).
+// Image is displayed at 100% width with no zoom, so % coords map directly.
+// Fine-tune left/top/w/h values here once visible in browser.
 const BEDS = [
-  { id: 'bed-1',  name: 'Bed 1',  left: 9.5,  top: 7.5,  w: 20, h: 12 },
-  { id: 'bed-2',  name: 'Bed 2',  left: 33.5, top: 7.5,  w: 20, h: 12 },
-  { id: 'bed-3',  name: 'Bed 3',  left: 57.5, top: 7.5,  w: 20, h: 12 },
-  { id: 'bed-4',  name: 'Bed 4',  left: 9.5,  top: 22,   w: 20, h: 12 },
-  { id: 'bed-5',  name: 'Bed 5',  left: 33.5, top: 22,   w: 20, h: 12 },
-  { id: 'bed-6',  name: 'Bed 6',  left: 57.5, top: 22,   w: 20, h: 12 },
-  { id: 'bed-7',  name: 'Bed 7',  left: 9.5,  top: 36.5, w: 20, h: 12 },
-  { id: 'bed-8',  name: 'Bed 8',  left: 33.5, top: 36.5, w: 20, h: 12 },
-  { id: 'bed-9',  name: 'Bed 9',  left: 57.5, top: 36.5, w: 20, h: 12 },
-  { id: 'bed-10', name: 'Bed 10', left: 9.5,  top: 51,   w: 20, h: 12 },
-  { id: 'bed-11', name: 'Bed 11', left: 33.5, top: 51,   w: 20, h: 12 },
-  { id: 'bed-12', name: 'Bed 12', left: 57.5, top: 51,   w: 20, h: 12 },
-  { id: 'bed-13', name: 'Bed 13', left: 33.5, top: 65.5, w: 20, h: 12 },
-  { id: 'bed-14', name: 'Bed 14', left: 57.5, top: 65.5, w: 20, h: 12 },
+  { id: 'bed-1',  name: 'District 1',  left: 7.9,  top: 7.2,  w: 22.6, h: 12.1 },
+  { id: 'bed-2',  name: 'District 2',  left: 33.5, top: 7.2,  w: 22.6, h: 12.1 },
+  { id: 'bed-3',  name: 'District 3',  left: 58.1, top: 7.2,  w: 22.6, h: 12.1 },
+  { id: 'bed-4',  name: 'District 4',  left: 7.9,  top: 21.7, w: 22.6, h: 12.1 },
+  { id: 'bed-5',  name: 'District 5',  left: 33.5, top: 21.7, w: 22.6, h: 12.1 },
+  { id: 'bed-6',  name: 'District 6',  left: 58.1, top: 21.7, w: 22.6, h: 12.1 },
+  { id: 'bed-7',  name: 'District 7',  left: 7.9,  top: 36.2, w: 22.6, h: 12.1 },
+  { id: 'bed-8',  name: 'District 8',  left: 33.5, top: 36.2, w: 22.6, h: 12.1 },
+  { id: 'bed-9',  name: 'District 9',  left: 58.1, top: 36.2, w: 22.6, h: 12.1 },
+  { id: 'bed-10', name: 'District 10', left: 7.9,  top: 50.7, w: 22.6, h: 12.1 },
+  { id: 'bed-11', name: 'District 11', left: 33.5, top: 50.7, w: 22.6, h: 12.1 },
+  { id: 'bed-12', name: 'District 12', left: 58.1, top: 50.7, w: 22.6, h: 12.1 },
+  { id: 'bed-13', name: 'District 13', left: 33.5, top: 65.2, w: 22.6, h: 12.1 },
+  { id: 'bed-14', name: 'District 14', left: 58.1, top: 65.2, w: 22.6, h: 12.1 },
 ];
 
 // ── APP STATE ─────────────────────────────────────────────────────────────────
@@ -192,13 +195,13 @@ function renderBedOverlays() {
 
   BEDS.forEach(bed => {
     const el = document.createElement('button');
-    el.className = 'bed-overlay state-empty';
+    el.className = 'bed-overlay';
     el.id = `overlay-${bed.id}`;
     el.setAttribute('aria-label', bed.name);
     el.style.cssText = `left:${bed.left}%;top:${bed.top}%;width:${bed.w}%;height:${bed.h}%`;
 
-    el.innerHTML = `<span class="bed-label">${bed.name}</span>
-                    <div class="bed-plant-chips" id="chips-${bed.id}"></div>`;
+    el.innerHTML = `<div class="bed-icons" id="icons-${bed.id}"></div>
+                    <span class="bed-label">${bed.name}</span>`;
 
     el.addEventListener('click', () => openBedSheet(bed.id));
     container.appendChild(el);
@@ -208,27 +211,23 @@ function renderBedOverlays() {
 function updateBedOverlay(bedId) {
   const data = bedData[bedId] || { plants: [], fertilizations: [] };
   const el = document.getElementById(`overlay-${bedId}`);
-  const chipsEl = document.getElementById(`chips-${bedId}`);
-  if (!el || !chipsEl) return;
+  const iconsEl = document.getElementById(`icons-${bedId}`);
+  if (!el || !iconsEl) return;
 
-  const hasPlants = data.plants.length > 0;
   const hasFert = data.fertilizations.length > 0;
+  el.classList.toggle('state-fertilized', hasFert);
 
-  el.className = 'bed-overlay ' + (hasPlants ? 'state-planted' : 'state-empty');
-  if (hasFert) el.classList.add('state-fertilized');
+  // Show up to 4 plant emojis; de-duplicate same plant
+  const seen = new Set();
+  const unique = data.plants.filter(p => {
+    if (seen.has(p.name)) return false;
+    seen.add(p.name);
+    return true;
+  });
 
-  chipsEl.innerHTML = data.plants.slice(0, 3).map(p =>
-    `<span class="bed-plant-chip">${p.name}</span>`
+  iconsEl.innerHTML = unique.slice(0, 4).map(p =>
+    `<span class="bed-icon" title="${p.name}">${p.icon || '🌱'}</span>`
   ).join('');
-
-  // Fertilizer dot
-  const existing = el.querySelector('.bed-fert-dot');
-  if (existing) existing.remove();
-  if (hasFert) {
-    const dot = document.createElement('span');
-    dot.className = 'bed-fert-dot';
-    el.appendChild(dot);
-  }
 }
 
 // ── FIRESTORE SUBSCRIPTIONS ───────────────────────────────────────────────────
