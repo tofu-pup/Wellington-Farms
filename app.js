@@ -87,31 +87,30 @@ const PLANT_LIBRARY = [
 // Fine-tune by opening app in browser and inspecting overlay positions.
 
 // Positions as % of image (1204×1306 px).
-// Calibrated from debug taps:
-//   Bed 1  top-left (24.5, 17.2) / bottom-right (35.8, 24.4)
-//   Bed 14 top-left (40.1, 72.5) / bottom-right (52.9, 80.9)
-// Column spacing: 40.1 - 24.5 = 15.6% → cols at 24.5 / 40.1 / 55.7
-// Row spacing: (72.5 - 17.2) / 4 = 13.825% per row
-// Bed size: avg w=12.1%, avg h=7.8%
-const BED_W = 12.1, BED_H = 7.8;
-const COLS = [24.5, 40.1, 55.7];
-const ROWS = [17.2, 31.0, 44.8, 58.6, 72.5];
-
+// Rows 1-2 fully measured; row 5 col 2 measured (D14).
+// Beds widen and row spacing grows slightly toward the bottom (mild perspective).
+// Row spacing: 13.0 / 13.55 / 14.1 / 14.65 (linear fit to measured anchors).
+// Rows 3-4-5 col positions extrapolated from the per-row drift observed in rows 1-2.
 const BEDS = [
-  { id: 'bed-1',  name: 'District 1',  left: COLS[0], top: ROWS[0], w: BED_W, h: BED_H },
-  { id: 'bed-2',  name: 'District 2',  left: COLS[1], top: ROWS[0], w: BED_W, h: BED_H },
-  { id: 'bed-3',  name: 'District 3',  left: COLS[2], top: ROWS[0], w: BED_W, h: BED_H },
-  { id: 'bed-4',  name: 'District 4',  left: COLS[0], top: ROWS[1], w: BED_W, h: BED_H },
-  { id: 'bed-5',  name: 'District 5',  left: COLS[1], top: ROWS[1], w: BED_W, h: BED_H },
-  { id: 'bed-6',  name: 'District 6',  left: COLS[2], top: ROWS[1], w: BED_W, h: BED_H },
-  { id: 'bed-7',  name: 'District 7',  left: COLS[0], top: ROWS[2], w: BED_W, h: BED_H },
-  { id: 'bed-8',  name: 'District 8',  left: COLS[1], top: ROWS[2], w: BED_W, h: BED_H },
-  { id: 'bed-9',  name: 'District 9',  left: COLS[2], top: ROWS[2], w: BED_W, h: BED_H },
-  { id: 'bed-10', name: 'District 10', left: COLS[0], top: ROWS[3], w: BED_W, h: BED_H },
-  { id: 'bed-11', name: 'District 11', left: COLS[1], top: ROWS[3], w: BED_W, h: BED_H },
-  { id: 'bed-12', name: 'District 12', left: COLS[2], top: ROWS[3], w: BED_W, h: BED_H },
-  { id: 'bed-13', name: 'District 13', left: COLS[0], top: ROWS[4], w: BED_W, h: BED_H },
-  { id: 'bed-14', name: 'District 14', left: COLS[1], top: ROWS[4], w: BED_W, h: BED_H },
+  // Row 1 — measured
+  { id: 'bed-1',  name: 'District 1',  left: 24.5, top: 17.2, w: 11.3, h: 7.2 },
+  { id: 'bed-2',  name: 'District 2',  left: 41.9, top: 17.3, w: 10.8, h: 7.1 },
+  { id: 'bed-3',  name: 'District 3',  left: 57.8, top: 17.0, w: 11.4, h: 7.1 },
+  // Row 2 — measured
+  { id: 'bed-4',  name: 'District 4',  left: 24.3, top: 30.3, w: 11.7, h: 7.6 },
+  { id: 'bed-5',  name: 'District 5',  left: 41.1, top: 30.2, w: 11.8, h: 7.2 },
+  { id: 'bed-6',  name: 'District 6',  left: 58.0, top: 30.1, w: 12.0, h: 7.7 },
+  // Row 3 — extrapolated (top = 30.2 + 13.55 = 43.8)
+  { id: 'bed-7',  name: 'District 7',  left: 24.1, top: 43.8, w: 12.4, h: 7.9 },
+  { id: 'bed-8',  name: 'District 8',  left: 40.8, top: 43.8, w: 12.4, h: 7.9 },
+  { id: 'bed-9',  name: 'District 9',  left: 58.1, top: 43.8, w: 12.4, h: 7.9 },
+  // Row 4 — extrapolated (top = 43.8 + 14.1 = 57.9)
+  { id: 'bed-10', name: 'District 10', left: 23.9, top: 57.9, w: 13.0, h: 8.2 },
+  { id: 'bed-11', name: 'District 11', left: 40.4, top: 57.9, w: 13.0, h: 8.2 },
+  { id: 'bed-12', name: 'District 12', left: 58.2, top: 57.9, w: 13.0, h: 8.2 },
+  // Row 5 — D14 measured; D13 col-1 drift extrapolated
+  { id: 'bed-13', name: 'District 13', left: 23.7, top: 72.5, w: 12.8, h: 8.4 },
+  { id: 'bed-14', name: 'District 14', left: 40.1, top: 72.5, w: 12.8, h: 8.4 },
 ];
 
 // ── APP STATE ─────────────────────────────────────────────────────────────────
