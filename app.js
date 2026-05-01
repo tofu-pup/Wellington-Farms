@@ -86,24 +86,22 @@ const PLANT_LIBRARY = [
 // tracks the same coordinate space as the rendered (zoomed) image.
 // Fine-tune by opening app in browser and inspecting overlay positions.
 
-// Positions as % of the raw image dimensions (508×621px).
-// Image is displayed at 100% width with no zoom, so % coords map directly.
-// Fine-tune left/top/w/h values here once visible in browser.
+// Positions as % of raw image (508×621px). Fine-tune here once visible.
 const BEDS = [
-  { id: 'bed-1',  name: 'District 1',  left: 7.9,  top: 7.2,  w: 22.6, h: 12.1 },
-  { id: 'bed-2',  name: 'District 2',  left: 33.5, top: 7.2,  w: 22.6, h: 12.1 },
-  { id: 'bed-3',  name: 'District 3',  left: 58.1, top: 7.2,  w: 22.6, h: 12.1 },
-  { id: 'bed-4',  name: 'District 4',  left: 7.9,  top: 21.7, w: 22.6, h: 12.1 },
-  { id: 'bed-5',  name: 'District 5',  left: 33.5, top: 21.7, w: 22.6, h: 12.1 },
-  { id: 'bed-6',  name: 'District 6',  left: 58.1, top: 21.7, w: 22.6, h: 12.1 },
-  { id: 'bed-7',  name: 'District 7',  left: 7.9,  top: 36.2, w: 22.6, h: 12.1 },
-  { id: 'bed-8',  name: 'District 8',  left: 33.5, top: 36.2, w: 22.6, h: 12.1 },
-  { id: 'bed-9',  name: 'District 9',  left: 58.1, top: 36.2, w: 22.6, h: 12.1 },
-  { id: 'bed-10', name: 'District 10', left: 7.9,  top: 50.7, w: 22.6, h: 12.1 },
-  { id: 'bed-11', name: 'District 11', left: 33.5, top: 50.7, w: 22.6, h: 12.1 },
-  { id: 'bed-12', name: 'District 12', left: 58.1, top: 50.7, w: 22.6, h: 12.1 },
-  { id: 'bed-13', name: 'District 13', left: 33.5, top: 65.2, w: 22.6, h: 12.1 },
-  { id: 'bed-14', name: 'District 14', left: 58.1, top: 65.2, w: 22.6, h: 12.1 },
+  { id: 'bed-1',  name: 'District 1',  left: 8,    top: 20,   w: 22, h: 13.5 },
+  { id: 'bed-2',  name: 'District 2',  left: 33.5, top: 20,   w: 22, h: 13.5 },
+  { id: 'bed-3',  name: 'District 3',  left: 59,   top: 20,   w: 22, h: 13.5 },
+  { id: 'bed-4',  name: 'District 4',  left: 8,    top: 35.5, w: 22, h: 13.5 },
+  { id: 'bed-5',  name: 'District 5',  left: 33.5, top: 35.5, w: 22, h: 13.5 },
+  { id: 'bed-6',  name: 'District 6',  left: 59,   top: 35.5, w: 22, h: 13.5 },
+  { id: 'bed-7',  name: 'District 7',  left: 8,    top: 51,   w: 22, h: 13.5 },
+  { id: 'bed-8',  name: 'District 8',  left: 33.5, top: 51,   w: 22, h: 13.5 },
+  { id: 'bed-9',  name: 'District 9',  left: 59,   top: 51,   w: 22, h: 13.5 },
+  { id: 'bed-10', name: 'District 10', left: 8,    top: 66.5, w: 22, h: 13.5 },
+  { id: 'bed-11', name: 'District 11', left: 33.5, top: 66.5, w: 22, h: 13.5 },
+  { id: 'bed-12', name: 'District 12', left: 59,   top: 66.5, w: 22, h: 13.5 },
+  { id: 'bed-13', name: 'District 13', left: 33.5, top: 82,   w: 22, h: 13.5 },
+  { id: 'bed-14', name: 'District 14', left: 59,   top: 82,   w: 22, h: 13.5 },
 ];
 
 // ── APP STATE ─────────────────────────────────────────────────────────────────
