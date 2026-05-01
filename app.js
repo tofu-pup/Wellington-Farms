@@ -87,24 +87,31 @@ const PLANT_LIBRARY = [
 // Fine-tune by opening app in browser and inspecting overlay positions.
 
 // Positions as % of image (1204×1306 px).
-// Columns at left: 16.5 / 33.5 / 50.5, each 14.5% wide.
-// 4 full rows of 3 + 1 partial row of 2 (left two columns only).
-// Add ?debug to URL to tap anywhere and see coordinates for fine-tuning.
+// Calibrated from debug taps:
+//   Bed 1  top-left (24.5, 17.2) / bottom-right (35.8, 24.4)
+//   Bed 14 top-left (40.1, 72.5) / bottom-right (52.9, 80.9)
+// Column spacing: 40.1 - 24.5 = 15.6% → cols at 24.5 / 40.1 / 55.7
+// Row spacing: (72.5 - 17.2) / 4 = 13.825% per row
+// Bed size: avg w=12.1%, avg h=7.8%
+const BED_W = 12.1, BED_H = 7.8;
+const COLS = [24.5, 40.1, 55.7];
+const ROWS = [17.2, 31.0, 44.8, 58.6, 72.5];
+
 const BEDS = [
-  { id: 'bed-1',  name: 'District 1',  left: 16.5, top: 14.5, w: 14.5, h: 8 },
-  { id: 'bed-2',  name: 'District 2',  left: 33.5, top: 14.5, w: 14.5, h: 8 },
-  { id: 'bed-3',  name: 'District 3',  left: 50.5, top: 14.5, w: 14.5, h: 8 },
-  { id: 'bed-4',  name: 'District 4',  left: 16.5, top: 27.2, w: 14.5, h: 8 },
-  { id: 'bed-5',  name: 'District 5',  left: 33.5, top: 27.2, w: 14.5, h: 8 },
-  { id: 'bed-6',  name: 'District 6',  left: 50.5, top: 27.2, w: 14.5, h: 8 },
-  { id: 'bed-7',  name: 'District 7',  left: 16.5, top: 39.9, w: 14.5, h: 8 },
-  { id: 'bed-8',  name: 'District 8',  left: 33.5, top: 39.9, w: 14.5, h: 8 },
-  { id: 'bed-9',  name: 'District 9',  left: 50.5, top: 39.9, w: 14.5, h: 8 },
-  { id: 'bed-10', name: 'District 10', left: 16.5, top: 52.6, w: 14.5, h: 8 },
-  { id: 'bed-11', name: 'District 11', left: 33.5, top: 52.6, w: 14.5, h: 8 },
-  { id: 'bed-12', name: 'District 12', left: 50.5, top: 52.6, w: 14.5, h: 8 },
-  { id: 'bed-13', name: 'District 13', left: 16.5, top: 65.3, w: 14.5, h: 8 },
-  { id: 'bed-14', name: 'District 14', left: 33.5, top: 65.3, w: 14.5, h: 8 },
+  { id: 'bed-1',  name: 'District 1',  left: COLS[0], top: ROWS[0], w: BED_W, h: BED_H },
+  { id: 'bed-2',  name: 'District 2',  left: COLS[1], top: ROWS[0], w: BED_W, h: BED_H },
+  { id: 'bed-3',  name: 'District 3',  left: COLS[2], top: ROWS[0], w: BED_W, h: BED_H },
+  { id: 'bed-4',  name: 'District 4',  left: COLS[0], top: ROWS[1], w: BED_W, h: BED_H },
+  { id: 'bed-5',  name: 'District 5',  left: COLS[1], top: ROWS[1], w: BED_W, h: BED_H },
+  { id: 'bed-6',  name: 'District 6',  left: COLS[2], top: ROWS[1], w: BED_W, h: BED_H },
+  { id: 'bed-7',  name: 'District 7',  left: COLS[0], top: ROWS[2], w: BED_W, h: BED_H },
+  { id: 'bed-8',  name: 'District 8',  left: COLS[1], top: ROWS[2], w: BED_W, h: BED_H },
+  { id: 'bed-9',  name: 'District 9',  left: COLS[2], top: ROWS[2], w: BED_W, h: BED_H },
+  { id: 'bed-10', name: 'District 10', left: COLS[0], top: ROWS[3], w: BED_W, h: BED_H },
+  { id: 'bed-11', name: 'District 11', left: COLS[1], top: ROWS[3], w: BED_W, h: BED_H },
+  { id: 'bed-12', name: 'District 12', left: COLS[2], top: ROWS[3], w: BED_W, h: BED_H },
+  { id: 'bed-13', name: 'District 13', left: COLS[0], top: ROWS[4], w: BED_W, h: BED_H },
+  { id: 'bed-14', name: 'District 14', left: COLS[1], top: ROWS[4], w: BED_W, h: BED_H },
 ];
 
 // ── APP STATE ─────────────────────────────────────────────────────────────────
