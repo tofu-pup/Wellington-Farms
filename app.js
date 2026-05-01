@@ -574,8 +574,9 @@ function initMapZoom() {
   function applyTransform() {
     const ww = wrapper.offsetWidth,  wh = wrapper.offsetHeight;
     const iw = inner.offsetWidth,    ih = inner.offsetHeight;
-    tx = clamp(tx, ww - iw * scale, 0);
-    ty = clamp(ty, wh - ih * scale, 0);
+    // When image is smaller than wrapper, lock to origin; otherwise allow pan to edge
+    tx = clamp(tx, Math.min(0, ww - iw * scale), 0);
+    ty = clamp(ty, Math.min(0, wh - ih * scale), 0);
     inner.style.transform = `translate(${tx}px,${ty}px) scale(${scale})`;
   }
 
@@ -587,16 +588,21 @@ function initMapZoom() {
     return { x: (a.clientX + b.clientX) / 2, y: (a.clientY + b.clientY) / 2 };
   }
 
+  // Safari fires GestureEvents for pinch; prevent them so our touch handlers take over
+  wrapper.addEventListener('gesturestart',  e => e.preventDefault(), { passive: false });
+  wrapper.addEventListener('gesturechange', e => e.preventDefault(), { passive: false });
+
   wrapper.addEventListener('touchstart', e => {
     startScale = scale; startTx = tx; startTy = ty;
     isDragging = false; dragDidHappen = false;
     if (e.touches.length === 2) {
+      e.preventDefault(); // stop Safari from doing its own page zoom
       startMid  = touchMid(e.touches[0], e.touches[1]);
       startDist = touchDist(e.touches[0], e.touches[1]);
     } else {
       startMid = { x: e.touches[0].clientX, y: e.touches[0].clientY };
     }
-  }, { passive: true });
+  }, { passive: false });
 
   wrapper.addEventListener('touchmove', e => {
     if (e.touches.length === 2) {

@@ -114,16 +114,13 @@ html, body {
 .garden-main {
   flex: 1;
   overflow: hidden;
-  display: flex;
-  align-items: flex-start;
-  justify-content: center;
   background: #1a2810;
+  position: relative;
 }
 
 .garden-map-wrapper {
-  position: relative;
-  width: min(100vw, calc((100vh - var(--header-height)) * 0.9217));
-  flex-shrink: 0;
+  position: absolute;
+  inset: 0;
   overflow: hidden;
   touch-action: none;
 }
