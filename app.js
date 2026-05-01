@@ -199,17 +199,48 @@ function renderBedOverlays() {
   const container = document.getElementById('bed-overlays');
   container.innerHTML = '';
 
-  // Debug mode (?debug in URL): overlays are hidden and non-interactive so you
-  // can tap the actual bed positions on the image and read back x%,y%.
+  // Debug mode (?debug in URL): overlays hidden, tap image to record coordinates.
   if (new URLSearchParams(location.search).has('debug')) {
     document.getElementById('bed-overlays').style.pointerEvents = 'none';
     document.getElementById('bed-overlays').style.opacity = '0';
+
+    // Inject debug panel
+    const panel = document.createElement('div');
+    panel.id = 'debug-panel';
+    panel.innerHTML = `
+      <div class="debug-header">
+        <span>📍 Debug — tap beds to record corners</span>
+        <button id="debug-clear">Clear</button>
+      </div>
+      <div id="debug-log"></div>`;
+    document.getElementById('app-screen').appendChild(panel);
+
+    let tapCount = 0;
+    document.getElementById('debug-clear').addEventListener('click', () => {
+      tapCount = 0;
+      document.getElementById('debug-log').innerHTML = '';
+    });
+
     document.getElementById('garden-map').addEventListener('click', e => {
       const rect = e.currentTarget.querySelector('.garden-image').getBoundingClientRect();
       const x = ((e.clientX - rect.left) / rect.width * 100).toFixed(1);
       const y = ((e.clientY - rect.top) / rect.height * 100).toFixed(1);
-      showToast(`x: ${x}%  y: ${y}%`);
-      console.log(`click → left:${x}%, top:${y}%`);
+      tapCount++;
+      const n = tapCount;
+      const text = `[${n}] left:${x}%, top:${y}%`;
+
+      const entry = document.createElement('div');
+      entry.className = 'debug-entry';
+      entry.innerHTML = `<span class="debug-coords">${text}</span>
+        <button class="debug-copy-btn">Copy</button>`;
+      entry.querySelector('.debug-copy-btn').addEventListener('click', e => {
+        e.stopPropagation();
+        navigator.clipboard.writeText(text).then(() => showToast('Copied!'));
+      });
+
+      const log = document.getElementById('debug-log');
+      log.prepend(entry); // newest on top
+      if (log.children.length > 10) log.lastElementChild.remove();
     });
   }
 
