@@ -1,0 +1,687 @@
+/* Wellington Farms — mobile-first PWA */
+
+:root {
+  --green-dark: #2d5016;
+  --green-mid: #4a7c28;
+  --green-light: #7daa4a;
+  --cream: #f5e8c8;
+  --cream-dark: #e8d4a0;
+  --earth: #6b4226;
+  --earth-light: #a0673a;
+  --text-dark: #1a1a1a;
+  --text-mid: #444;
+  --text-light: #888;
+  --white: #fff;
+  --radius: 16px;
+  --radius-sm: 10px;
+  --sheet-radius: 24px;
+  --shadow: 0 4px 24px rgba(0,0,0,0.18);
+  --header-height: 56px;
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  height: 100%;
+  overflow: hidden;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: var(--green-dark);
+  color: var(--text-dark);
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* ── SCREENS ─────────────────────────────────────────── */
+
+.screen {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.hidden { display: none !important; }
+
+/* ── AUTH SCREEN ─────────────────────────────────────── */
+
+#auth-screen {
+  background: linear-gradient(160deg, var(--green-dark) 0%, #1a3009 100%);
+  align-items: center;
+  justify-content: center;
+}
+
+.auth-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 32px;
+}
+
+.auth-logo {
+  width: 180px;
+  height: 180px;
+  object-fit: contain;
+  border-radius: 50%;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+}
+
+.auth-tagline {
+  color: var(--cream);
+  font-size: 16px;
+  opacity: 0.8;
+  font-style: italic;
+  margin-bottom: 8px;
+}
+
+/* ── APP SCREEN ──────────────────────────────────────── */
+
+#app-screen {
+  background: var(--green-dark);
+}
+
+/* ── HEADER ──────────────────────────────────────────── */
+
+.app-header {
+  height: var(--header-height);
+  display: flex;
+  align-items: center;
+  padding: 0 12px 0 16px;
+  gap: 10px;
+  background: var(--green-dark);
+  flex-shrink: 0;
+  padding-top: env(safe-area-inset-top, 0px);
+}
+
+.header-logo {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.header-title {
+  flex: 1;
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--cream);
+  letter-spacing: 0.3px;
+}
+
+/* ── GARDEN MAP ──────────────────────────────────────── */
+
+.garden-main {
+  flex: 1;
+  overflow: hidden;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  background: #111;
+}
+
+.garden-map-wrapper {
+  position: relative;
+  /* Crop horizontal sides to focus on the bed grid */
+  width: 100%;
+  overflow: hidden;
+}
+
+.garden-image {
+  /* Fill width, crop height if needed */
+  display: block;
+  width: 134%;          /* slight zoom to crop decorative sides */
+  margin-left: -17%;    /* center the crop on the beds */
+  height: auto;
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+#bed-overlays {
+  position: absolute;
+  inset: 0;
+}
+
+/* ── BED OVERLAY BUTTONS ──────────────────────────────── */
+
+.bed-overlay {
+  position: absolute;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 3px 2px 2px;
+  overflow: hidden;
+  border: 2px solid transparent;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.bed-overlay:active {
+  opacity: 0.8;
+  transform: scale(0.97);
+}
+
+/* Empty bed */
+.bed-overlay.state-empty {
+  background: rgba(0,0,0,0.08);
+  border-color: rgba(255,255,255,0.25);
+}
+.bed-overlay.state-empty:hover {
+  background: rgba(255,255,255,0.1);
+}
+
+/* Has content */
+.bed-overlay.state-planted {
+  background: rgba(45, 80, 22, 0.55);
+  border-color: rgba(125, 170, 74, 0.7);
+}
+
+/* Recently fertilized */
+.bed-overlay.state-fertilized {
+  border-color: rgba(160, 103, 58, 0.8);
+}
+
+.bed-label {
+  font-size: 9px;
+  font-weight: 700;
+  color: rgba(255,255,255,0.85);
+  text-shadow: 0 1px 2px rgba(0,0,0,0.8);
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.bed-plant-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1px;
+  justify-content: center;
+  margin-top: 2px;
+  width: 100%;
+}
+
+.bed-plant-chip {
+  font-size: 7px;
+  background: rgba(125, 170, 74, 0.8);
+  color: #fff;
+  border-radius: 3px;
+  padding: 1px 3px;
+  line-height: 1.2;
+  text-shadow: none;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.bed-fert-dot {
+  position: absolute;
+  bottom: 3px;
+  right: 3px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--earth-light);
+  border: 1px solid rgba(255,255,255,0.6);
+}
+
+/* ── BOTTOM SHEET ─────────────────────────────────────── */
+
+.bottom-sheet {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: var(--white);
+  border-radius: var(--sheet-radius) var(--sheet-radius) 0 0;
+  box-shadow: var(--shadow);
+  max-height: 82vh;
+  display: flex;
+  flex-direction: column;
+  z-index: 100;
+  transform: translateY(0);
+  transition: transform 0.3s cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+.bottom-sheet.hidden {
+  display: flex !important;
+  transform: translateY(110%);
+  pointer-events: none;
+}
+
+.sub-panel {
+  z-index: 110;
+  background: var(--cream);
+}
+
+.sheet-drag-handle {
+  width: 40px;
+  height: 4px;
+  background: #ddd;
+  border-radius: 2px;
+  margin: 12px auto 0;
+  flex-shrink: 0;
+}
+
+.sheet-scroll {
+  overflow-y: auto;
+  flex: 1;
+  padding: 8px 20px calc(20px + var(--safe-bottom));
+  -webkit-overflow-scrolling: touch;
+}
+
+.sheet-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 0 8px;
+  position: sticky;
+  top: 0;
+  background: inherit;
+  z-index: 1;
+}
+
+.sheet-header h2 {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--green-dark);
+}
+
+.sheet-header h3 {
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--green-dark);
+}
+
+/* ── SHEET SECTIONS ───────────────────────────────────── */
+
+.sheet-section {
+  margin-top: 16px;
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.section-title {
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: var(--text-light);
+}
+
+/* ── PLANTS LIST ──────────────────────────────────────── */
+
+.plants-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  min-height: 32px;
+}
+
+.plant-chip {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--green-dark);
+  color: var(--cream);
+  border-radius: 20px;
+  padding: 6px 10px 6px 12px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.plant-chip-date {
+  font-size: 11px;
+  opacity: 0.7;
+}
+
+.plant-chip-remove {
+  background: none;
+  border: none;
+  color: var(--cream);
+  opacity: 0.6;
+  cursor: pointer;
+  padding: 0;
+  font-size: 16px;
+  line-height: 1;
+  margin-left: 2px;
+}
+.plant-chip-remove:hover { opacity: 1; }
+
+/* ── FERTILIZER LIST ─────────────────────────────────── */
+
+.fertilizer-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-height: 32px;
+}
+
+.fert-entry {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #f8f0e0;
+  border-radius: var(--radius-sm);
+  padding: 10px 12px;
+  font-size: 14px;
+}
+
+.fert-entry-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.fert-entry-type {
+  font-weight: 600;
+  color: var(--earth);
+}
+
+.fert-entry-date {
+  font-size: 12px;
+  color: var(--text-light);
+}
+
+.fert-remove {
+  background: none;
+  border: none;
+  color: var(--text-light);
+  cursor: pointer;
+  padding: 4px;
+  font-size: 16px;
+  line-height: 1;
+}
+.fert-remove:hover { color: #c00; }
+
+/* ── PLANT PICKER PANEL ───────────────────────────────── */
+
+.plant-search-wrap {
+  margin: 8px 0 12px;
+}
+
+.plant-search-wrap input {
+  width: 100%;
+  padding: 12px 16px;
+  border: 2px solid var(--cream-dark);
+  border-radius: var(--radius-sm);
+  font-size: 16px;
+  outline: none;
+  background: var(--white);
+}
+.plant-search-wrap input:focus {
+  border-color: var(--green-mid);
+}
+
+.plant-picker-list {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+  padding-bottom: 8px;
+  max-height: 38vh;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.plant-option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  background: var(--white);
+  border: 2px solid transparent;
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  cursor: pointer;
+  text-align: left;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.plant-option:active, .plant-option.selected {
+  background: #eaf3da;
+  border-color: var(--green-mid);
+  font-weight: 600;
+}
+
+.plant-option-icon { font-size: 18px; }
+
+.plant-option-name {
+  flex: 1;
+  line-height: 1.2;
+}
+
+.plant-option-cat {
+  font-size: 10px;
+  color: var(--text-light);
+  display: block;
+}
+
+/* ── FERTILIZER TYPE BUTTONS ─────────────────────────── */
+
+.fert-type-picker {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin: 8px 0 12px;
+}
+
+.fert-type-btn {
+  padding: 14px 10px;
+  border: 2px solid var(--cream-dark);
+  border-radius: var(--radius-sm);
+  background: var(--white);
+  font-size: 14px;
+  cursor: pointer;
+  text-align: center;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.fert-type-btn.active {
+  background: #eaf3da;
+  border-color: var(--green-mid);
+  font-weight: 600;
+}
+
+.fert-other-wrap {
+  margin-bottom: 12px;
+}
+.fert-other-wrap input {
+  width: 100%;
+  padding: 12px 16px;
+  border: 2px solid var(--cream-dark);
+  border-radius: var(--radius-sm);
+  font-size: 16px;
+  outline: none;
+  background: var(--white);
+}
+.fert-other-wrap input:focus { border-color: var(--green-mid); }
+
+/* ── PANEL FOOTER ─────────────────────────────────────── */
+
+.plant-panel-footer {
+  padding-top: 12px;
+  border-top: 1px solid var(--cream-dark);
+  margin-top: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.date-label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-mid);
+}
+
+.date-label input[type="date"] {
+  width: 100%;
+  padding: 10px 14px;
+  border: 2px solid var(--cream-dark);
+  border-radius: var(--radius-sm);
+  font-size: 16px;
+  outline: none;
+  background: var(--white);
+}
+.date-label input[type="date"]:focus { border-color: var(--green-mid); }
+
+/* ── BUTTONS ─────────────────────────────────────────── */
+
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: var(--green-dark);
+  color: var(--cream);
+  border: none;
+  border-radius: var(--radius-sm);
+  padding: 12px 20px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s, opacity 0.15s;
+}
+.btn-primary:hover { background: var(--green-mid); }
+.btn-primary:disabled { opacity: 0.4; cursor: default; }
+.btn-primary:active { opacity: 0.8; }
+
+.btn-large {
+  padding: 16px 28px;
+  font-size: 16px;
+  border-radius: var(--radius);
+}
+
+.btn-small {
+  padding: 6px 12px;
+  font-size: 13px;
+  border-radius: 8px;
+}
+
+.btn-full { width: 100%; }
+
+.icon-btn {
+  background: none;
+  border: none;
+  color: var(--cream);
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  min-height: 44px;
+}
+
+.close-btn { color: var(--text-mid); }
+.close-btn:hover { color: var(--text-dark); }
+
+/* ── MENU ─────────────────────────────────────────────── */
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+}
+
+.overlay-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.4);
+}
+
+.menu-card {
+  position: absolute;
+  top: calc(var(--header-height) + env(safe-area-inset-top, 0px) + 4px);
+  right: 12px;
+  background: var(--white);
+  border-radius: var(--radius);
+  padding: 16px;
+  min-width: 220px;
+  box-shadow: var(--shadow);
+  z-index: 1;
+}
+
+.menu-user {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 4px;
+}
+
+.avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  background: var(--cream-dark);
+}
+
+.user-name-text {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-dark);
+}
+
+.user-email-text {
+  font-size: 12px;
+  color: var(--text-light);
+}
+
+.menu-divider {
+  border: none;
+  border-top: 1px solid var(--cream-dark);
+  margin: 12px 0;
+}
+
+.menu-item {
+  width: 100%;
+  background: none;
+  border: none;
+  text-align: left;
+  padding: 10px 4px;
+  font-size: 15px;
+  color: var(--text-dark);
+  cursor: pointer;
+  border-radius: 8px;
+}
+.menu-item:hover { background: var(--cream); }
+
+/* ── MISC ─────────────────────────────────────────────── */
+
+.empty-hint {
+  font-size: 14px;
+  color: var(--text-light);
+  font-style: italic;
+  padding: 4px 0;
+}
+
+.toast {
+  position: fixed;
+  bottom: calc(20px + var(--safe-bottom));
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(20,20,20,0.9);
+  color: #fff;
+  padding: 10px 20px;
+  border-radius: 24px;
+  font-size: 14px;
+  z-index: 999;
+  white-space: nowrap;
+  pointer-events: none;
+  transition: opacity 0.3s;
+}
+
+.toast.visible { opacity: 1; }
+.toast.hidden { opacity: 0; }
