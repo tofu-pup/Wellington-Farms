@@ -276,35 +276,38 @@ function renderBedOverlays() {
 
 // ── EASTER EGG ────────────────────────────────────────────────────────────────
 
-// Proper Italian Greyhound side-view SVG.
-// Layer order: tail → far legs (behind body) → body → brown spot → neck → head → near legs (in front).
-// Legs use CSS classes for diagonal-trot animation; far legs are slightly grey to show depth.
-const DOG_SVG = `<svg viewBox="0 0 190 90" xmlns="http://www.w3.org/2000/svg">
-  <path fill="none" stroke="white" stroke-width="3.5" stroke-linecap="round"
-        d="M 48 37 C 43 46 39 55 37 63"/>
-  <g transform="translate(60,57)"><g class="dog-leg leg-diag-b">
-    <path fill="#ccc" d="M -3 0 C -3.5 8 -3.5 16 -3 22 C -2.5 26 -2 30 -2 32 L 2 32 C 2 30 2.5 26 3 22 C 3.5 16 3.5 8 3 0 Z"/>
-    <ellipse cx="0" cy="33" rx="4" ry="1.6" fill="#ccc"/>
+// Italian Greyhound — single unified closed path for the full body+neck+head silhouette.
+// Top outline: croup → back rise → withers → neck arching steeply up → skull → muzzle
+// Bottom outline: nose → jaw → throat → chest → brisket → belly → tuck → hindquarters → close
+const DOG_SVG = `<svg viewBox="0 0 210 95" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <clipPath id="dog-body-clip">
+      <path d="M50 30 C70 25,102 20,120 18 C130 16,142 10,154 8 C159 8,167 11,173 15 C178 18,184 20,188 22 L188 26 C185 29,180 32,174 34 C167 38,158 43,150 46 C142 51,133 54,122 54 C110 54,98 50,88 46 C78 43,68 44,62 46 C58 47,54 45,52 38 C50 34,50 32,50 30 Z"/>
+    </clipPath>
+  </defs>
+  <path fill="none" stroke="white" stroke-width="2.8" stroke-linecap="round"
+        d="M50 28 C38 22,28 18,22 20 C18 22,22 28,32 30"/>
+  <g transform="translate(65,46)"><g class="dog-leg leg-diag-b">
+    <rect x="-3" y="0" width="6" height="28" rx="3" fill="#d4d4d4"/>
+    <ellipse cx="0" cy="30" rx="4.5" ry="2" fill="#d4d4d4"/>
   </g></g>
-  <g transform="translate(110,57)"><g class="dog-leg leg-diag-b">
-    <path fill="#ccc" d="M -3 0 C -3.5 8 -3.5 16 -3 22 C -2.5 26 -2 30 -2 32 L 2 32 C 2 30 2.5 26 3 22 C 3.5 16 3.5 8 3 0 Z"/>
-    <ellipse cx="0" cy="33" rx="4" ry="1.6" fill="#ccc"/>
+  <g transform="translate(120,52)"><g class="dog-leg leg-diag-b">
+    <rect x="-3" y="0" width="6" height="22" rx="3" fill="#d4d4d4"/>
+    <ellipse cx="0" cy="24" rx="4.5" ry="2" fill="#d4d4d4"/>
   </g></g>
-  <path fill="white" d="M 120 56 C 118 42 122 28 126 22 C 118 18 108 15 98 15 C 84 15 72 18 62 22 C 54 26 48 32 48 36 C 46 44 48 52 54 58 C 60 64 72 64 78 58 C 84 50 90 42 96 40 C 104 40 114 48 120 56 Z"/>
-  <ellipse cx="83" cy="18" rx="22" ry="7" transform="rotate(-5,83,18)" fill="#7a3a10"/>
-  <path fill="white" d="M 126 22 C 130 16 138 10 146 8 C 150 7 154 8 156 10 C 152 14 146 18 140 22 C 136 24 130 24 126 22 Z"/>
-  <ellipse cx="164" cy="12" rx="14" ry="7" transform="rotate(-8,164,12)" fill="white"/>
-  <path fill="white" d="M 172 10 C 178 8 185 11 186 15 C 186 20 181 21 174 18 Z"/>
-  <ellipse cx="186" cy="15" rx="2.5" ry="1.5" fill="#888"/>
-  <circle cx="167" cy="10" r="1.8" fill="#333"/>
-  <path fill="#ddd" d="M 155 9 C 151 3 144 4 142 8 C 146 12 152 11 155 9 Z"/>
-  <g transform="translate(67,57)"><g class="dog-leg leg-diag-a">
-    <path fill="white" d="M -3 0 C -3.5 8 -3.5 16 -3 22 C -2.5 26 -2 30 -2 32 L 2 32 C 2 30 2.5 26 3 22 C 3.5 16 3.5 8 3 0 Z"/>
-    <ellipse cx="0" cy="33" rx="4" ry="1.6" fill="white"/>
+  <path fill="white"
+    d="M50 30 C70 25,102 20,120 18 C130 16,142 10,154 8 C159 8,167 11,173 15 C178 18,184 20,188 22 L188 26 C185 29,180 32,174 34 C167 38,158 43,150 46 C142 51,133 54,122 54 C110 54,98 50,88 46 C78 43,68 44,62 46 C58 47,54 45,52 38 C50 34,50 32,50 30 Z"/>
+  <ellipse cx="92" cy="24" rx="24" ry="8" fill="#7a3a10" clip-path="url(#dog-body-clip)"/>
+  <ellipse cx="188" cy="24" rx="2.8" ry="2.2" fill="#555"/>
+  <circle cx="172" cy="19" r="1.8" fill="#333"/>
+  <path fill="#e0e0e0" d="M170 10 C165 4,158 6,157 10 C161 14,167 12,170 10 Z"/>
+  <g transform="translate(71,46)"><g class="dog-leg leg-diag-a">
+    <rect x="-3" y="0" width="6" height="28" rx="3" fill="white"/>
+    <ellipse cx="0" cy="30" rx="4.5" ry="2" fill="white"/>
   </g></g>
-  <g transform="translate(117,57)"><g class="dog-leg leg-diag-a">
-    <path fill="white" d="M -3 0 C -3.5 8 -3.5 16 -3 22 C -2.5 26 -2 30 -2 32 L 2 32 C 2 30 2.5 26 3 22 C 3.5 16 3.5 8 3 0 Z"/>
-    <ellipse cx="0" cy="33" rx="4" ry="1.6" fill="white"/>
+  <g transform="translate(126,52)"><g class="dog-leg leg-diag-a">
+    <rect x="-3" y="0" width="6" height="22" rx="3" fill="white"/>
+    <ellipse cx="0" cy="24" rx="4.5" ry="2" fill="white"/>
   </g></g>
 </svg>`;
 
